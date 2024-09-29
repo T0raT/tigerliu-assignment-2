@@ -10,9 +10,15 @@ function App() {
   const clusterColors = ["red", "green", "orange", "purple", "cyan"];
 
   useEffect(() => {
-    setData(genRanData());
-    setCentroids(initRandCentroids(data, k));
-  }, [k, data]);
+    const generatedData = genRanData();
+    setData(generatedData);
+  }, [k]);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      setCentroids(initRandCentroids(data, k));
+    }
+  }, [data]);
 
   function runKMeans() {
     let iterations = 0;
@@ -41,25 +47,28 @@ function App() {
   }
 
   return (
-    <Plot
-      data={[
-        {
-          x: data.map((p) => p.x),
-          y: data.map((p) => p.y),
-          mode: "markers",
-          type: "scatter",
-          marker: { color: "black" },
-        },
-        {
-          x: centroids.map((p) => p.x),
-          y: centroids.map((p) => p.y),
-          mode: "markers",
-          type: "scatter",
-          marker: { color: "blue", symbol: "x", size: 12 },
-        },
-      ]}
-      layout={{ width: 600, height: 600, title: "some graph" }}
-    />
+    <>
+      <button onClick={runKMeans}>Step thru K-Means</button>
+      <Plot
+        data={[
+          {
+            x: data.map((p) => p.x),
+            y: data.map((p) => p.y),
+            mode: "markers",
+            type: "scatter",
+            marker: { color: "black" },
+          },
+          {
+            x: centroids.map((p) => p.x),
+            y: centroids.map((p) => p.y),
+            mode: "markers",
+            type: "scatter",
+            marker: { color: "blue", symbol: "x", size: 12 },
+          },
+        ]}
+        layout={{ width: 600, height: 600, title: "some graph" }}
+      />
+    </>
   );
 }
 
@@ -144,14 +153,14 @@ function hasConverged(oldCentroids, newCentroids, threshold = 0.0001) {
 function assignClusters(dataPoints, centroids) {
   return dataPoints.map((point) => {
     let minDistance = Infinity;
-    let clusterId = null;
+    let clusterID = null;
     centroids.forEach((centroid) => {
       const distance = euclideanDistance(point, centroid);
       if (distance < minDistance) {
         minDistance = distance;
-        clusterId = centroid.id;
+        clusterID = centroid.id;
       }
     });
-    return { ...point, clusterId };
+    return { ...point, clusterID };
   });
 }
