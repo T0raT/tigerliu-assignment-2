@@ -13,6 +13,8 @@ function App() {
 
   const clusterColors = ["red", "green", "orange", "purple", "cyan"];
 
+  // You know, we can totally turn this into a library
+
   // Reset KMeans state
   function resetKMeans() {
     setCentroids([]);
@@ -144,6 +146,7 @@ function App() {
     setClusters([]);
     setCentroids(centroids);
   }
+
   function startManualSelection() {
     if (data.length === 0) {
       alert("Please generate data first.");
