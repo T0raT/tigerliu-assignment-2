@@ -9,6 +9,9 @@ function App() {
   const [clusters, setClusters] = useState([]);
   const [iter, setIter] = useState(0);
   const [method, setMethod] = useState("random");
+  const [manualSelection, setManualSelection] = useState(false);
+  const [centroidCount, setCentroidCount] = useState(0);
+
   const clusterColors = ["red", "green", "orange", "purple", "cyan"];
 
   // Reset KMeans state
@@ -28,6 +31,7 @@ function App() {
         y: Math.random() * 11,
       });
     }
+    setManualSelection(false);
     setData(points);
     resetKMeans();
   }
@@ -45,6 +49,7 @@ function App() {
       });
       dataCopy.splice(randIndex, 1);
     }
+    setManualSelection(false);
     setIter(0);
     setClusters([]);
     setCentroids(centroidsArray);
@@ -95,6 +100,7 @@ function App() {
         }
       }
     }
+    setManualSelection(false);
     setIter(0);
     setClusters([]);
     setCentroids(centroids);
@@ -134,9 +140,41 @@ function App() {
       }
       centroids.push(farthest); // Add the farthest point to the centroids list
     }
+    setManualSelection(false);
     setIter(0);
     setClusters([]);
     setCentroids(centroids);
+  }
+  function startManualSelection() {
+    if (data.length === 0) {
+      alert("Please generate data first.");
+      return;
+    }
+    console.log(centroids);
+    resetKMeans(); // Clear previous centroids and clusters
+    setManualSelection(true); // Activate manual selection mode
+    setCentroids([]); // Clear any existing centroids
+  }
+  function handlePlotClick(event) {
+    if (!manualSelection) return;
+
+    // Extract click coordinates
+    const x = event.points[0].x;
+    const y = event.points[0].y;
+
+    // Add the new centroid
+    setCentroids((prevCentroids) => {
+      if (prevCentroids.length >= k) {
+        alert(`You have already selected ${k} centroids.`);
+        setManualSelection(false);
+        return prevCentroids;
+      }
+      const newCentroids = [...prevCentroids, { x, y }];
+      if (newCentroids.length === k) {
+        setManualSelection(false);
+      }
+      return newCentroids;
+    });
   }
 
   // Euclidean Distance
@@ -302,13 +340,18 @@ function App() {
         break;
 
       case "manual":
-        console.log("Fuck your manual method dumb ass");
+        startManualSelection();
         break;
     }
   }
 
   return (
     <>
+      <h2>
+        For Manual: Please select manual mode first, then click on "Select
+        Centroids" button to begin selecting a point.
+      </h2>
+      <h3>Click on any points in the graph to select a centroid</h3>
       <div>
         <button onClick={genRanData}>Generate Data</button>
       </div>
@@ -345,6 +388,8 @@ function App() {
         className="plot-graph"
         data={plotData}
         layout={{ width: 600, height: 600, title: "KMeans Clustering" }}
+        config={{ staticPlot: false }}
+        onClick={(e) => handlePlotClick(e)}
       />
     </>
   );
