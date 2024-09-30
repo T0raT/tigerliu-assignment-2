@@ -10,7 +10,6 @@ function App() {
   const [iter, setIter] = useState(0);
   const [method, setMethod] = useState("random");
   const [manualSelection, setManualSelection] = useState(false);
-  const [centroidCount, setCentroidCount] = useState(0);
 
   const clusterColors = ["red", "green", "orange", "purple", "cyan"];
 
@@ -387,7 +386,7 @@ function App() {
       <Plot
         className="plot-graph"
         data={plotData}
-        layout={{ width: 600, height: 600, title: "KMeans Clustering" }}
+        layout={{ width: 800, height: 600, title: "KMeans Clustering" }}
         config={{ staticPlot: false }}
         onClick={(e) => handlePlotClick(e)}
       />
