@@ -23,7 +23,7 @@ function App() {
   // Let's user generate a random plot first
   function genRanData() {
     const points = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 800; i++) {
       points.push({
         id: i,
         x: Math.random() * 11,
